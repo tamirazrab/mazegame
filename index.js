@@ -42,4 +42,26 @@ const horizontals = Array(cells - 1)
     .map(() => Array(cells).fill(false));
 // Cool trick to avoid dual for-loops and make array of choice.
 
-console.log(grid);
+// For randomly position starting element inside grid.
+const startingRow = Math.floor(Math.random() * cells);
+const startingCol = Math.floor(Math.random() * cells);
+
+const goThroughMaze = (row, col) => {
+    // Check if randomly generated position already visited if then return;
+    if (grid[row][col])
+        return;
+
+    // If not make it visited.
+    grid[row][col] = true;
+
+    // Calculate position for neighbors of current position.
+    // It'd be in format of UP, RIGHT, BOTTOM, LEFT.
+    const neighbors = [
+        [row - 1, col],
+        [row, col + 1],
+        [row + 1, col],
+        [row, col - 1]
+    ];
+
+}
+
