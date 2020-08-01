@@ -1,8 +1,9 @@
-const { Engine, Render, Runner, World, Bodies } = Matter;
+const { Engine, Render, Runner, World, Bodies, Body } = Matter;
+/* Body's for adding velocity */
 const engine = Engine.create();
 const { world } = engine;
 
-const cells = 30; // As grid is square 3x3, making one variable would be enough for now.
+const cells = 20; // As grid is square 3x3, making one variable would be enough for now.
 const width = 600;
 const height = 600;
 const unitLength = width / cells; // As width and height are same for now that's why.
@@ -139,7 +140,19 @@ const ball = Bodies.circle(
     unitLength / 2,
     unitLength / 2,
     unitLength * .4, // This represent circle radius so .4 to set the circle diameter half as unit length
-    { isStatic: true }
+    { isStatic: false }
 );
 
 World.add(world, ball);
+
+// Event listener on whole maze to detect key down event
+document.addEventListener('keydown', event => {
+    // Extracting current velocity of ball
+    const { x, y } = ball.velocity;
+    switch (event.keyCode) {
+        case 87 /* Up */: Body.setVelocity(ball, { x, y: y - 5 }); break;
+        case 83 /* Down */: Body.setVelocity(ball, { x, y: y + 5 }); break;
+        case 65 /* Left */: Body.setVelocity(ball, { x: x - 5, y }); break;
+        case 68 /* Right */: Body.setVelocity(ball, { x: x + 5, y }); break;
+    }
+});
