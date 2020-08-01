@@ -20,10 +20,10 @@ Render.run(render);
 Runner.run(Runner.create(), engine);
 
 let walls = [
-    Bodies.rectangle(width / 2, 0, width, 40, { isStatic: true }),
-    Bodies.rectangle(width / 2, 600, width, 40, { isStatic: true }),
-    Bodies.rectangle(0, height / 2, 40, height, { isStatic: true }),
-    Bodies.rectangle(width, height / 2, 40, height, { isStatic: true })
+    Bodies.rectangle(width / 2, 0, width, 2, { isStatic: true }),
+    Bodies.rectangle(width / 2, 600, width, 2, { isStatic: true }),
+    Bodies.rectangle(0, height / 2, 2, height, { isStatic: true }),
+    Bodies.rectangle(width, height / 2, 2, height, { isStatic: true })
 ];
 
 World.add(world, walls);
@@ -105,12 +105,21 @@ const goThroughMaze = (row, col) => {
 goThroughMaze(startingRow, startingCol);
 
 horizontals.forEach((row, rowIndex) => {
-    row.forEach((col, colIndex) => {
+    row.forEach((isWallOpen, colIndex) => {
         /* col contains whether there should be any wall or not */
-        if (col)
+        if (isWallOpen)
             return; // If there is no wall then return
 
         const wall = Bodies.rectangle(colIndex * unitLength + unitLength / 2, rowIndex * unitLength + unitLength, unitLength, 4, { isStatic: true });
+
+        World.add(world, wall);
+    });
+});
+
+verticals.forEach((row, rowIndex) => {
+    row.forEach((isWallOpen, colIndex) => {
+        if (isWallOpen) return;
+        const wall = Bodies.rectangle(colIndex * unitLength + unitLength, rowIndex * unitLength + unitLength / 2, 4, unitLength, { isStatic: true });
 
         World.add(world, wall);
     });
