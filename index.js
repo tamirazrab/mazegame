@@ -2,7 +2,7 @@ const { Engine, Render, Runner, World, Bodies } = Matter;
 const engine = Engine.create();
 const { world } = engine;
 
-const cells = 3; // As grid is square 3x3, making one variable would be enough for now.
+const cells = 30; // As grid is square 3x3, making one variable would be enough for now.
 const width = 600;
 const height = 600;
 const unitLength = width / cells; // As width and height are same for now that's why.
@@ -134,3 +134,12 @@ const goal = Bodies.rectangle(
 );
 
 World.add(world, goal);
+
+const ball = Bodies.circle(
+    unitLength / 2,
+    unitLength / 2,
+    unitLength * .4, // This represent circle radius so .4 to set the circle diameter half as unit length
+    { isStatic: true }
+);
+
+World.add(world, ball);
