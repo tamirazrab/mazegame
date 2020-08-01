@@ -1,9 +1,13 @@
-const { Engine, Render, Runner, World, Bodies, Body } = Matter;
-/* Body's for adding velocity */
+const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
+/* Body's for adding velocity 
+   Events for detecting different event happening in our world
+*/
 const engine = Engine.create();
+/* Disabling gravity as it messes up the ball movements */
+engine.world.gravity.y = 0; /* in y direction */
 const { world } = engine;
 
-const cells = 20; // As grid is square 3x3, making one variable would be enough for now.
+const cells = 3; // As grid is square 3x3, making one variable would be enough for now.
 const width = 600;
 const height = 600;
 const unitLength = width / cells; // As width and height are same for now that's why.
@@ -80,7 +84,6 @@ const goThroughMaze = (row, col) => {
         [row + 1, col, 'down'],
         [row, col - 1, 'left']
     ]);
-    console.log(neighbors);
     // Now to iterate over each neighbor 
     for (let neighbor of neighbors) {
         const [nextRow, nextCol, direction] = neighbor;
@@ -131,7 +134,7 @@ const goal = Bodies.rectangle(
     height - unitLength / 2,
     unitLength * .5,
     unitLength * .5, // 50% width and height of unit length
-    { isStatic: true }
+    { isStatic: true, label: 'goal' }
 );
 
 World.add(world, goal);
@@ -140,7 +143,7 @@ const ball = Bodies.circle(
     unitLength / 2,
     unitLength / 2,
     unitLength * .4, // This represent circle radius so .4 to set the circle diameter half as unit length
-    { isStatic: false }
+    { isStatic: false, label: 'ball' }
 );
 
 World.add(world, ball);
@@ -155,4 +158,11 @@ document.addEventListener('keydown', event => {
         case 65 /* Left */: Body.setVelocity(ball, { x: x - 5, y }); break;
         case 68 /* Right */: Body.setVelocity(ball, { x: x + 5, y }); break;
     }
+});
+
+Events.on(engine, 'collisionStart', event => {
+    const label = ['ball', 'goal'];
+    event.pairs.forEach(collision => { /* pairs what contain information about different objects when they collide with each other */
+        if (label.includes(collision.bodyA.label) && label.includes(collision.bodyB.label)) console.log('User reached end state.');
+    })
 });
