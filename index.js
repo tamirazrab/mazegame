@@ -114,7 +114,7 @@ horizontals.forEach((row, rowIndex) => {
         if (isWallOpen)
             return; // If there is no wall then return
 
-        const wall = Bodies.rectangle(colIndex * unitLength + unitLength / 2, rowIndex * unitLength + unitLength, unitLength, 4, { isStatic: true });
+        const wall = Bodies.rectangle(colIndex * unitLength + unitLength / 2, rowIndex * unitLength + unitLength, unitLength, 4, { isStatic: true, label: 'wall' });
 
         World.add(world, wall);
     });
@@ -123,7 +123,7 @@ horizontals.forEach((row, rowIndex) => {
 verticals.forEach((row, rowIndex) => {
     row.forEach((isWallOpen, colIndex) => {
         if (isWallOpen) return;
-        const wall = Bodies.rectangle(colIndex * unitLength + unitLength, rowIndex * unitLength + unitLength / 2, 4, unitLength, { isStatic: true });
+        const wall = Bodies.rectangle(colIndex * unitLength + unitLength, rowIndex * unitLength + unitLength / 2, 4, unitLength, { isStatic: true, label: 'wall' });
 
         World.add(world, wall);
     });
@@ -163,6 +163,15 @@ document.addEventListener('keydown', event => {
 Events.on(engine, 'collisionStart', event => {
     const label = ['ball', 'goal'];
     event.pairs.forEach(collision => { /* pairs what contain information about different objects when they collide with each other */
-        if (label.includes(collision.bodyA.label) && label.includes(collision.bodyB.label)) console.log('User reached end state.');
+        if (label.includes(collision.bodyA.label) && label.includes(collision.bodyB.label)) {
+            // When user wins conditions
+            // Turning gravity back on
+            world.gravity.y = 1;
+            // Selecting all the walls and enabling gravity on them
+            world.bodies.forEach((body) => {
+                if (body.label === 'wall')
+                    Body.setStatic(body, false);
+            });
+        }
     })
 });
