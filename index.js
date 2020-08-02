@@ -7,12 +7,16 @@ const engine = Engine.create();
 engine.world.gravity.y = 0; /* in y direction */
 const { world } = engine;
 
-const cells = 20; // As grid is square 3x3, making one variable would be enough for now.
+const horizontalCells = 4;
+const verticalCells = 3;
 
 /* Setting width and height according to space available on screen */
 const width = window.innerWidth;
 const height = window.innerHeight;
-const unitLength = width / cells; // As width and height are same for now that's why.
+
+const unitLengthX = width / horizontalCells; /* width length - total width / total cell = length of each individual cell */
+
+const unitLengthY = height / verticalCells;
 
 const render = Render.create({
     element: document.body,
@@ -28,7 +32,7 @@ Runner.run(Runner.create(), engine);
 
 let walls = [
     Bodies.rectangle(width / 2, 0, width, 2, { isStatic: true }),
-    Bodies.rectangle(width / 2, 600, width, 1, { isStatic: true }),
+    Bodies.rectangle(width / 2, 600, width, 2, { isStatic: true }),
     Bodies.rectangle(0, height / 2, 2, height, { isStatic: true }),
     Bodies.rectangle(width, height / 2, 2, height, { isStatic: true })
 ];
@@ -50,22 +54,22 @@ let shuffle = (arr) => {
     return arr;
 };
 
-const grid = Array(cells)
+const grid = Array(verticalCells)
     .fill(null)
-    .map(() => Array(cells).fill(false));
+    .map(() => Array(horizontalCells).fill(false));
 
-const verticals = Array(cells)
+const verticals = Array(horizontalCells)
     .fill(null)
-    .map(() => Array(cells - 1).fill(false));
+    .map(() => Array(verticalCells - 1).fill(false));
 
-const horizontals = Array(cells - 1)
+const horizontals = Array(horizontalCells - 1)
     .fill(null)
-    .map(() => Array(cells).fill(false));
+    .map(() => Array(verticalCells).fill(false));
 // Cool trick to avoid dual for-loops and make array of choice.
 
 // For randomly position starting element inside grid.
-const startingRow = Math.floor(Math.random() * cells);
-const startingCol = Math.floor(Math.random() * cells);
+const startingRow = Math.floor(Math.random() * verticalCells);
+const startingCol = Math.floor(Math.random() * horizontalCells);
 
 const goThroughMaze = (row, col) => {
     // Check if randomly generated position already visited if then return;
@@ -90,7 +94,7 @@ const goThroughMaze = (row, col) => {
     for (let neighbor of neighbors) {
         const [nextRow, nextCol, direction] = neighbor;
 
-        if (nextRow < 0 || nextRow >= cells || nextCol < 0 || nextCol >= cells || grid[nextRow][nextCol])
+        if (nextRow < 0 || nextRow >= verticalCells || nextCol < 0 || nextCol >= horizontalCells || grid[nextRow][nextCol])
             continue;
 
         // Removing wall from either vertical or horizontals
@@ -116,7 +120,12 @@ horizontals.forEach((row, rowIndex) => {
         if (isWallOpen)
             return; // If there is no wall then return
 
-        const wall = Bodies.rectangle(colIndex * unitLength + unitLength / 2, rowIndex * unitLength + unitLength, unitLength, 4, { isStatic: true, label: 'wall' });
+        const wall = Bodies.rectangle(
+            colIndex * unitLengthX + unitLengthX / 2,
+            rowIndex * unitLengthY + unitLengthY,
+            unitLengthX,
+            2,
+            { isStatic: true, label: 'wall' });
 
         World.add(world, wall);
     });
@@ -125,26 +134,32 @@ horizontals.forEach((row, rowIndex) => {
 verticals.forEach((row, rowIndex) => {
     row.forEach((isWallOpen, colIndex) => {
         if (isWallOpen) return;
-        const wall = Bodies.rectangle(colIndex * unitLength + unitLength, rowIndex * unitLength + unitLength / 2, 4, unitLength, { isStatic: true, label: 'wall' });
+        const wall = Bodies.rectangle(
+            colIndex * unitLengthX + unitLengthX,
+            rowIndex * unitLengthY + unitLengthY / 2,
+            4,
+            unitLengthY,
+            { isStatic: true, label: 'wall' });
 
         World.add(world, wall);
     });
 });
 
 const goal = Bodies.rectangle(
-    width - unitLength / 2,
-    height - unitLength / 2,
-    unitLength * .5,
-    unitLength * .5, // 50% width and height of unit length
+    width - unitLengthX / 2,
+    height - unitLengthY / 2,
+    unitLengthX * .5, // Width
+    unitLengthY * .5, // 50% width and height of unit length
     { isStatic: true, label: 'goal' }
 );
 
 World.add(world, goal);
 
+const ballRadius = Math.min(unitLengthX, unitLengthY) / 4;
 const ball = Bodies.circle(
-    unitLength / 2,
-    unitLength / 2,
-    unitLength * .2, // This represent circle radius so .4 to set the circle diameter half as unit length
+    unitLengthX / 2,
+    unitLengthY / 2,
+    ballRadius, // This represent circle radius so .4 to set the circle diameter half as unit length
     { isStatic: false, label: 'ball' }
 );
 
