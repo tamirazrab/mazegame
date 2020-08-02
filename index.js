@@ -7,9 +7,11 @@ const engine = Engine.create();
 engine.world.gravity.y = 0; /* in y direction */
 const { world } = engine;
 
-const cells = 3; // As grid is square 3x3, making one variable would be enough for now.
-const width = 600;
-const height = 600;
+const cells = 20; // As grid is square 3x3, making one variable would be enough for now.
+
+/* Setting width and height according to space available on screen */
+const width = window.innerWidth;
+const height = window.innerHeight;
 const unitLength = width / cells; // As width and height are same for now that's why.
 
 const render = Render.create({
@@ -26,7 +28,7 @@ Runner.run(Runner.create(), engine);
 
 let walls = [
     Bodies.rectangle(width / 2, 0, width, 2, { isStatic: true }),
-    Bodies.rectangle(width / 2, 600, width, 2, { isStatic: true }),
+    Bodies.rectangle(width / 2, 600, width, 1, { isStatic: true }),
     Bodies.rectangle(0, height / 2, 2, height, { isStatic: true }),
     Bodies.rectangle(width, height / 2, 2, height, { isStatic: true })
 ];
