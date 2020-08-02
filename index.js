@@ -14,6 +14,9 @@ const verticalCells = 3;
 const width = window.innerWidth;
 const height = window.innerHeight;
 
+const horizontalWallSize = 5;
+const verticalWallSize = 5;
+
 const unitLengthX = width / horizontalCells; /* width length - total width / total cell = length of each individual cell */
 
 const unitLengthY = height / verticalCells;
@@ -124,7 +127,7 @@ horizontals.forEach((row, rowIndex) => {
             colIndex * unitLengthX + unitLengthX / 2,
             rowIndex * unitLengthY + unitLengthY,
             unitLengthX,
-            2,
+            horizontalWallSize,
             { isStatic: true, label: 'wall' });
 
         World.add(world, wall);
@@ -137,7 +140,7 @@ verticals.forEach((row, rowIndex) => {
         const wall = Bodies.rectangle(
             colIndex * unitLengthX + unitLengthX,
             rowIndex * unitLengthY + unitLengthY / 2,
-            4,
+            verticalWallSize,
             unitLengthY,
             { isStatic: true, label: 'wall' });
 
@@ -186,7 +189,7 @@ Events.on(engine, 'collisionStart', event => {
             world.gravity.y = 1;
             // Selecting all the walls and enabling gravity on them
             world.bodies.forEach((body) => {
-                if (body.label === 'wall')
+                if (body.label === 'wall' || body.label === 'goal')
                     Body.setStatic(body, false);
             });
         }
