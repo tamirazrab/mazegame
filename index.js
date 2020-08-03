@@ -8,8 +8,8 @@ const engine = Engine.create();
 engine.world.gravity.y = 0; /* in y direction */
 const { world } = engine;
 
-const horizontalCells = 14;
-const verticalCells = 13;
+const horizontalCells = 24;
+const verticalCells = 23;
 
 /* Setting width and height according to space available on screen */
 const width = window.innerWidth;
@@ -202,6 +202,10 @@ document.addEventListener('keydown', event => {
     }
 });
 
+// Win condition
+const winMessage = document.querySelector('.winner');
+const deleteMessage = document.querySelector('.delete');
+
 Events.on(engine, 'collisionStart', event => {
     const label = ['ball', 'goal'];
     event.pairs.forEach(collision => { /* pairs what contain information about different objects when they collide with each other */
@@ -214,6 +218,13 @@ Events.on(engine, 'collisionStart', event => {
                 if (body.label === 'wall' || body.label === 'goal')
                     Body.setStatic(body, false);
             });
+            winMessage.classList.remove('hidden');
+            winMessage.style.backgroundColor = 'black';
         }
     })
+});
+
+deleteMessage.addEventListener('click', (event) => {
+    event.target.parentElement.remove();
+    winMessage.parentNode.removeChild(winMessage); /* Bringing bended canvas back to life */
 });
