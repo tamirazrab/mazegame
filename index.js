@@ -4,11 +4,12 @@ const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 */
 const engine = Engine.create();
 /* Disabling gravity as it messes up the ball movements */
+// engine.world.gravity.x = 0;
 engine.world.gravity.y = 0; /* in y direction */
 const { world } = engine;
 
-const horizontalCells = 4;
-const verticalCells = 3;
+const horizontalCells = 14;
+const verticalCells = 13;
 
 /* Setting width and height according to space available on screen */
 const width = window.innerWidth;
@@ -25,6 +26,7 @@ const render = Render.create({
     element: document.body,
     engine: engine,
     options: {
+        wireframes: false,
         width,
         height
     }
@@ -128,7 +130,12 @@ horizontals.forEach((row, rowIndex) => {
             rowIndex * unitLengthY + unitLengthY,
             unitLengthX,
             horizontalWallSize,
-            { isStatic: true, label: 'wall' });
+            {
+                isStatic: true, label: 'wall',
+                render: {
+                    fillStyle: '#f4b6c2'
+                }
+            });
 
         World.add(world, wall);
     });
@@ -142,7 +149,12 @@ verticals.forEach((row, rowIndex) => {
             rowIndex * unitLengthY + unitLengthY / 2,
             verticalWallSize,
             unitLengthY,
-            { isStatic: true, label: 'wall' });
+            {
+                isStatic: true, label: 'wall',
+                render: {
+                    fillStyle: '#eec9d2'
+                }
+            });
 
         World.add(world, wall);
     });
@@ -153,7 +165,12 @@ const goal = Bodies.rectangle(
     height - unitLengthY / 2,
     unitLengthX * .5, // Width
     unitLengthY * .5, // 50% width and height of unit length
-    { isStatic: true, label: 'goal' }
+    {
+        isStatic: true, label: 'goal',
+        render: {
+            fillStyle: '#f6abb6'
+        }
+    }
 );
 
 World.add(world, goal);
@@ -163,7 +180,12 @@ const ball = Bodies.circle(
     unitLengthX / 2,
     unitLengthY / 2,
     ballRadius, // This represent circle radius so .4 to set the circle diameter half as unit length
-    { isStatic: false, label: 'ball' }
+    {
+        isStatic: false, label: 'ball',
+        render: {
+            fillStyle: '#feb2a8'
+        }
+    }
 );
 
 World.add(world, ball);
